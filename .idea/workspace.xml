@@ -7,18 +7,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c77e760-09b4-40c5-a040-b0e1b949fa83" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/add_screen_image_placeholder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/shape_button_rounded.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/shape_image_view_border.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/AddHappyPlaceActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/AddHappyPlaceActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_action_add_24dp.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_action_add_24dp.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_add_happy_place.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_add_happy_place.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,6 +100,10 @@
     <configuration />
   </component>
   <component name="WindowStateProjectService">
+    <state x="711" y="80" key="#com.intellij.ide.util.MemberChooser" timestamp="1596007182660">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="711" y="80" key="#com.intellij.ide.util.MemberChooser/0.0.1366.728@0.0.1366.728" timestamp="1596007182660" />
     <state x="526" y="122" key="AndroidCreateResourceFileDialog" timestamp="1596003844708">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -121,9 +116,9 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="631" y="188" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1596005355027" />
-    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1596006004910">
+    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1596006945369">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1596006004910" />
+    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1596006945369" />
   </component>
 </project>
