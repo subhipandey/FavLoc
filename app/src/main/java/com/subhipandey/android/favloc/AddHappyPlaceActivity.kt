@@ -4,15 +4,16 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.ActivityNotFoundException
-import android.content.ContentUris
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -22,11 +23,9 @@ import kotlinx.android.synthetic.main.activity_add_happy_place.*
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.jar.Manifest
 
 class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
-    
     private var cal = Calendar.getInstance()
 
 
@@ -58,9 +57,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         et_date.setOnClickListener(this)
-
         tv_add_image.setOnClickListener(this)
-
     }
 
     override fun onClick(v: View?) {
@@ -69,16 +66,14 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 DatePickerDialog(
                     this@AddHappyPlaceActivity,
                     dateSetListener,
-
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
                     cal.get(Calendar.DAY_OF_MONTH)
                 ).show()
             }
 
-
             R.id.tv_add_image -> {
-                val pictureDialog = androidx.appcompat.app.AlertDialog.Builder(this)
+                val pictureDialog = AlertDialog.Builder(this)
                 pictureDialog.setTitle("Select Action")
                 val pictureDialogItems =
                     arrayOf("Select photo from gallery", "Capture photo from camera")
@@ -88,15 +83,43 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     when (which) {
 
                         0 -> choosePhotoFromGallery()
-                        1 -> Toast.makeText(this@AddHappyPlaceActivity,"Camera selection coming soon...", Toast.LENGTH_SHORT).show()
+                        1 -> takePhotoFromCamera()
                     }
                 }
                 pictureDialog.show()
             }
-
         }
     }
 
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GALLERY) {
+                if (data != null) {
+                    val contentURI = data.data
+                    try {
+
+                        @Suppress("DEPRECATION")
+                        val selectedImageBitmap =
+                            MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+
+                        iv_place_image!!.setImageBitmap(selectedImageBitmap)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        Toast.makeText(this@AddHappyPlaceActivity, "Failed!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            } else if (requestCode == CAMERA) {
+
+                val thumbnail: Bitmap = data!!.extras!!.get("data") as Bitmap
+                iv_place_image!!.setImageBitmap(thumbnail)
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.e("Cancelled", "Cancelled")
+        }
+    }
 
     private fun updateDateInView() {
         val myFormat = "dd.MM.yyyy"
@@ -106,7 +129,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun choosePhotoFromGallery() {
-
         Dexter.withActivity(this)
             .withPermissions(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -118,7 +140,14 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
                     if (report!!.areAllPermissionsGranted()) {
 
-                        Toast.makeText(this@AddHappyPlaceActivity,"Storage READ/WRITE permission are granted. Now you can select an image from GALLERY or lets says phone storage.", Toast.LENGTH_SHORT).show()
+
+                        val galleryIntent = Intent(
+                            Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        )
+
+                        startActivityForResult(galleryIntent, GALLERY)
+
                     }
                 }
 
@@ -130,13 +159,38 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }).onSameThread()
             .check()
-        // END
     }
-    // END
 
+
+    private fun takePhotoFromCamera() {
+
+        Dexter.withActivity(this)
+            .withPermissions(
+               android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+
+                    if (report!!.areAllPermissionsGranted()) {
+                        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        startActivityForResult(intent, CAMERA)
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+                    showRationalDialogForPermissions()
+                }
+            }).onSameThread()
+            .check()
+    }
 
     private fun showRationalDialogForPermissions() {
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setMessage("It Looks like you have turned off permissions required for this feature. It can be enabled under Application Settings")
             .setPositiveButton("GO TO SETTINGS"
             ) { _, _ ->
@@ -155,4 +209,10 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }.show()
     }
 
+    companion object {
+
+        private const val GALLERY = 1
+        private const val CAMERA = 2
+
+    }
 }
