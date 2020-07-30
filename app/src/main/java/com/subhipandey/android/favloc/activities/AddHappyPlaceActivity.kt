@@ -1,4 +1,4 @@
-package com.subhipandey.android.favloc
+package com.subhipandey.android.favloc.activities
 
 import android.Manifest
 import android.app.Activity
@@ -22,6 +22,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.subhipandey.android.favloc.R
 import kotlinx.android.synthetic.main.activity_add_happy_place.*
 import java.io.File
 import java.io.FileOutputStream
@@ -37,6 +38,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
+    private var saveImageToInternalStorage : Uri? = null
+    private var mLatitude : Double = 0.0
+    private var mLongitude : Double = 0.0
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +70,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
+        btn_save.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -95,6 +102,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 pictureDialog.show()
             }
+            R.id.btn_save ->{
+
+            }
         }
     }
 
@@ -112,7 +122,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
 
 
-                        val saveImageToInternalStorage =
+                        saveImageToInternalStorage =
                             saveImageToInternalStorage(selectedImageBitmap)
                         Log.e("Saved Image : ", "Path :: $saveImageToInternalStorage")
 
@@ -128,7 +138,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 val thumbnail: Bitmap = data!!.extras!!.get("data") as Bitmap
 
 
-                val saveImageToInternalStorage =
+                 saveImageToInternalStorage =
                     saveImageToInternalStorage(thumbnail)
                 Log.e("Saved Image : ", "Path :: $saveImageToInternalStorage")
 
@@ -165,7 +175,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
 
-                        startActivityForResult(galleryIntent, GALLERY)
+                        startActivityForResult(galleryIntent,
+                            GALLERY
+                        )
                     }
                 }
 
@@ -193,7 +205,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
                     if (report!!.areAllPermissionsGranted()) {
                         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        startActivityForResult(intent, CAMERA)
+                        startActivityForResult(intent,
+                            CAMERA
+                        )
                     }
                 }
 

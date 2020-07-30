@@ -1,8 +1,9 @@
-package com.subhipandey.android.favloc
+package com.subhipandey.android.favloc.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.subhipandey.android.favloc.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
