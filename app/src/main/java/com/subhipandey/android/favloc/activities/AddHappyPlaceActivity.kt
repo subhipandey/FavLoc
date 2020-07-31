@@ -49,7 +49,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
     private var mHappyPlaceDetails: HappyPlaceModel? = null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -64,11 +63,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             onBackPressed()
         }
 
-
         if (intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)) {
             mHappyPlaceDetails =
                 intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS) as HappyPlaceModel
         }
+
 
         dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
@@ -97,7 +96,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
             btn_save.text = "UPDATE"
         }
-
 
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
@@ -155,7 +153,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
 
                         val happyPlaceModel = HappyPlaceModel(
-                            0,
+
+                            if (mHappyPlaceDetails == null) 0 else mHappyPlaceDetails!!.id,
+
                             et_title.text.toString(),
                             saveImageToInternalStorage.toString(),
                             et_description.text.toString(),
@@ -168,12 +168,23 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
                         val dbHandler = DatabaseHandler(this)
 
-                        val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
 
-                        if (addHappyPlace > 0) {
-                            setResult(Activity.RESULT_OK)
-                            finish()
+                        if (mHappyPlaceDetails == null) {
+                            val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
+
+                            if (addHappyPlace > 0) {
+                                setResult(Activity.RESULT_OK);
+                                finish()
+                            }
+                        } else {
+                            val updateHappyPlace = dbHandler.updateHappyPlace(happyPlaceModel)
+
+                            if (updateHappyPlace > 0) {
+                                setResult(Activity.RESULT_OK);
+                                finish()
+                            }
                         }
+
                     }
                 }
             }
@@ -308,11 +319,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }.show()
     }
 
-
     private fun saveImageToInternalStorage(bitmap: Bitmap): Uri {
 
 
         val wrapper = ContextWrapper(applicationContext)
+
 
         var file = wrapper.getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE)
 
