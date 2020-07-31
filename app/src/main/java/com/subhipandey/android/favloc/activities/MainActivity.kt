@@ -26,10 +26,25 @@ class MainActivity : AppCompatActivity() {
 
         fabAddHappyPlace.setOnClickListener {
             val intent = Intent(this@MainActivity, AddHappyPlaceActivity::class.java)
+
             startActivityForResult(intent, ADD_PLACE_ACTIVITY_REQUEST_CODE)
         }
 
         getHappyPlacesListFromLocalDB()
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+        if (requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                getHappyPlacesListFromLocalDB()
+            } else {
+                Log.e("Activity", "Cancelled or Back Pressed")
+            }
+        }
     }
 
 
@@ -39,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
         val getHappyPlacesList = dbHandler.getHappyPlacesList()
 
-
         if (getHappyPlacesList.size > 0) {
             rv_happy_places_list.visibility = View.VISIBLE
             tv_no_records_available.visibility = View.GONE
@@ -48,7 +62,6 @@ class MainActivity : AppCompatActivity() {
             rv_happy_places_list.visibility = View.GONE
             tv_no_records_available.visibility = View.VISIBLE
         }
-
     }
 
 
@@ -60,25 +73,24 @@ class MainActivity : AppCompatActivity() {
         val placesAdapter = HappyPlacesAdapter(this, happyPlacesList)
         rv_happy_places_list.adapter = placesAdapter
 
-        placesAdapter.setOnClickListener(object: HappyPlacesAdapter.OnClickListener{
+        placesAdapter.setOnClickListener(object :
+            HappyPlacesAdapter.OnClickListener {
             override fun onClick(position: Int, model: HappyPlaceModel) {
                 val intent = Intent(this@MainActivity, HappyPlaceDetailActivity::class.java)
+
+
+                intent.putExtra(EXTRA_PLACE_DETAILS, model)
+
                 startActivity(intent)
             }
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                getHappyPlacesListFromLocalDB()
-            }else{
-                Log.e("Activity","Cancelled or back pressed")
-            }
-        }
-    }
-companion object{
-       var ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
+    companion object {
+        private const val ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
+
+
+        internal const val EXTRA_PLACE_DETAILS = "extra_place_details"
+
     }
 }
