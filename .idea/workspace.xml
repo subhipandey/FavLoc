@@ -7,8 +7,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c77e760-09b4-40c5-a040-b0e1b949fa83" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/utils/SwipeToDeleteCallback.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_delete_white_24dp.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/activities/AddHappyPlaceActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/activities/AddHappyPlaceActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/activities/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/activities/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/adapters/HappyPlacesAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/adapters/HappyPlacesAdapter.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/database/DatabaseHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/subhipandey/android/favloc/database/DatabaseHandler.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,9 +36,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="valueResourceFile" />
-        <option value="Kotlin Class" />
         <option value="layoutResourceFile" />
         <option value="Kotlin File" />
+        <option value="Kotlin Class" />
         <option value="resourceFile" />
       </list>
     </option>
@@ -120,21 +123,21 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="722" y="20" width="561" height="695" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1596092230401" />
-    <state x="526" y="122" key="AndroidCreateResourceFileDialog" timestamp="1596195185128">
+    <state x="526" y="122" key="AndroidCreateResourceFileDialog" timestamp="1596274185080">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="526" y="122" key="AndroidCreateResourceFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1596195185128" />
+    <state x="526" y="122" key="AndroidCreateResourceFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1596274185080" />
     <state x="825" y="198" key="AndroidCreateXmlResourceDialog" timestamp="1596005995763">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="825" y="198" key="AndroidCreateXmlResourceDialog/0.0.1366.728@0.0.1366.728" timestamp="1596005995763" />
-    <state x="631" y="188" key="com.intellij.ide.util.TipDialog" timestamp="1596204404236">
+    <state x="631" y="188" key="com.intellij.ide.util.TipDialog" timestamp="1596273805529">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="631" y="188" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1596204404236" />
-    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1596204968340">
+    <state x="631" y="188" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1596273805529" />
+    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1596274913387">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1596204968340" />
+    <state x="640" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1596274913387" />
   </component>
 </project>

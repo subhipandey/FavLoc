@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.subhipandey.android.favloc.R
 import com.subhipandey.android.favloc.activities.AddHappyPlaceActivity
 import com.subhipandey.android.favloc.activities.MainActivity
+import com.subhipandey.android.favloc.database.DatabaseHandler
 import com.subhipandey.android.favloc.models.HappyPlaceModel
 import kotlinx.android.synthetic.main.item_happy_place.view.*
 
@@ -54,6 +55,15 @@ open class HappyPlacesAdapter(
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun removeAt(position: Int){
+        val dbHandler = DatabaseHandler(context)
+        val isDeleted = dbHandler.deleteHappyPlace(list[position])
+        if(isDeleted > 0){
+            list.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     fun notifyEditItem(activity: Activity, position: Int, requestCode: Int) {

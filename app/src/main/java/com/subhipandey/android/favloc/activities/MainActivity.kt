@@ -13,6 +13,7 @@ import com.subhipandey.android.favloc.R
 import com.subhipandey.android.favloc.adapters.HappyPlacesAdapter
 import com.subhipandey.android.favloc.database.DatabaseHandler
 import com.subhipandey.android.favloc.models.HappyPlaceModel
+import com.subhipandey.android.favloc.utils.SwipeToDeleteCallback
 import com.subhipandey.android.favloc.utils.SwipeToEditCallback
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -85,21 +86,32 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
         val editSwipeHandler = object : SwipeToEditCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
                 val adapter = rv_happy_places_list.adapter as HappyPlacesAdapter
                 adapter.notifyEditItem(
                     this@MainActivity,
                     viewHolder.adapterPosition,
                     ADD_PLACE_ACTIVITY_REQUEST_CODE
                 )
-
             }
         }
         val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
         editItemTouchHelper.attachToRecyclerView(rv_happy_places_list)
+
+
+        val deleteSwipeHandler = object : SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                val adapter = rv_happy_places_list.adapter as HappyPlacesAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+
+                getHappyPlacesListFromLocalDB()
+
+            }
+        }
+        val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+        deleteItemTouchHelper.attachToRecyclerView(rv_happy_places_list)
 
     }
 
