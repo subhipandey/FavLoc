@@ -1,45 +1,49 @@
 package com.subhipandey.android.favloc.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.location.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.subhipandey.android.favloc.R
+import com.subhipandey.android.favloc.database.DatabaseHandler
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.subhipandey.android.favloc.R
-import com.subhipandey.android.favloc.database.DatabaseHandler
 import com.subhipandey.android.favloc.models.HappyPlaceModel
 import kotlinx.android.synthetic.main.activity_add_happy_place.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
+
 
     private var cal = Calendar.getInstance()
 
@@ -54,6 +58,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
     private var mHappyPlaceDetails: HappyPlaceModel? = null
 
 
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -63,10 +70,13 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
         setSupportActionBar(toolbar_add_place)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         toolbar_add_place.setNavigationOnClickListener {
             onBackPressed()
         }
+
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
 
 
         if (!Places.isInitialized()) {
@@ -80,7 +90,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             mHappyPlaceDetails =
                 intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS) as HappyPlaceModel
         }
-
 
         dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
@@ -114,9 +123,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         tv_add_image.setOnClickListener(this)
         btn_save.setOnClickListener(this)
         et_location.setOnClickListener(this)
-
         tv_select_current_location.setOnClickListener(this)
-
     }
 
     override fun onClick(v: View?) {
@@ -133,7 +140,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.tv_add_image -> {
-                val pictureDialog = androidx.appcompat.app.AlertDialog.Builder(this)
+                val pictureDialog = AlertDialog.Builder(this)
                 pictureDialog.setTitle("Select Action")
                 val pictureDialogItems =
                     arrayOf("Select photo from gallery", "Capture photo from camera")
@@ -166,7 +173,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
 
-
             R.id.tv_select_current_location -> {
 
                 if (!isLocationEnabled()) {
@@ -190,11 +196,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                                 if (report!!.areAllPermissionsGranted()) {
 
-                                    Toast.makeText(
-                                        this@AddHappyPlaceActivity,
-                                        "Location permission is granted. Now you can request for a current location.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+
+                                    requestNewLocationData()
+
                                 }
                             }
 
@@ -208,7 +212,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         .check()
                 }
             }
-
 
             R.id.btn_save -> {
 
@@ -351,6 +354,8 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }).onSameThread()
             .check()
     }
+
+
     private fun takePhotoFromCamera() {
 
         Dexter.withActivity(this)
@@ -380,7 +385,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun showRationalDialogForPermissions() {
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setMessage("It Looks like you have turned off permissions required for this feature. It can be enabled under Application Settings")
             .setPositiveButton(
                 "GO TO SETTINGS"
@@ -399,6 +404,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 dialog.dismiss()
             }.show()
     }
+
 
     private fun saveImageToInternalStorage(bitmap: Bitmap): Uri {
 
@@ -440,6 +446,32 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         )
     }
 
+
+    @SuppressLint("MissingPermission")
+    private fun requestNewLocationData() {
+
+        val mLocationRequest = LocationRequest()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest.interval = 0
+        mLocationRequest.fastestInterval = 0
+        mLocationRequest.numUpdates = 1
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient.requestLocationUpdates(
+            mLocationRequest, mLocationCallback,
+            Looper.myLooper()
+        )
+    }
+
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val mLastLocation: Location = locationResult.lastLocation
+            mLatitude = mLastLocation.latitude
+            Log.e("Current Latitude", "$mLatitude")
+            mLongitude = mLastLocation.longitude
+            Log.e("Current Longitude", "$mLongitude")
+        }
+    }
 
     companion object {
         private const val GALLERY = 1
