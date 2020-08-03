@@ -1,7 +1,6 @@
 package com.subhipandey.android.favloc.models
 
-import android.os.Parcel
-import android.os.Parcelable
+
 import java.io.Serializable
 
 data class HappyPlaceModel(

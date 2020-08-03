@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -75,7 +76,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             )
         }
 
-
         if (intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)) {
             mHappyPlaceDetails =
                 intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS) as HappyPlaceModel
@@ -113,8 +113,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
         btn_save.setOnClickListener(this)
-
         et_location.setOnClickListener(this)
+
+        tv_select_current_location.setOnClickListener(this)
 
     }
 
@@ -162,6 +163,49 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                }
+            }
+
+
+            R.id.tv_select_current_location -> {
+
+                if (!isLocationEnabled()) {
+                    Toast.makeText(
+                        this,
+                        "Your location provider is turned off. Please turn it on.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
+                } else {
+
+                    Dexter.withActivity(this)
+                        .withPermissions(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                        .withListener(object : MultiplePermissionsListener {
+                            override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                                if (report!!.areAllPermissionsGranted()) {
+
+                                    Toast.makeText(
+                                        this@AddHappyPlaceActivity,
+                                        "Location permission is granted. Now you can request for a current location.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+
+                            override fun onPermissionRationaleShouldBeShown(
+                                permissions: MutableList<PermissionRequest>?,
+                                token: PermissionToken?
+                            ) {
+                                showRationalDialogForPermissions()
+                            }
+                        }).onSameThread()
+                        .check()
                 }
             }
 
@@ -255,7 +299,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
                 iv_place_image!!.setImageBitmap(thumbnail)
             }
-
             else if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
 
                 val place: Place = Autocomplete.getPlaceFromIntent(data!!)
@@ -264,7 +307,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 mLatitude = place.latLng!!.latitude
                 mLongitude = place.latLng!!.longitude
             }
-
         }
         else if (resultCode == Activity.RESULT_CANCELED) {
             Log.e("Cancelled", "Cancelled")
@@ -309,8 +351,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }).onSameThread()
             .check()
     }
-
-
     private fun takePhotoFromCamera() {
 
         Dexter.withActivity(this)
@@ -360,7 +400,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             }.show()
     }
 
-
     private fun saveImageToInternalStorage(bitmap: Bitmap): Uri {
 
 
@@ -392,13 +431,21 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         return Uri.parse(file.absolutePath)
     }
 
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+
     companion object {
         private const val GALLERY = 1
         private const val CAMERA = 2
         private const val IMAGE_DIRECTORY = "HappyPlacesImages"
 
-
         private const val PLACE_AUTOCOMPLETE_REQUEST_CODE = 3
-
     }
 }
