@@ -34,6 +34,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.subhipandey.android.favloc.models.HappyPlaceModel
+import com.subhipandey.android.favloc.utils.GetAddressFromLatLng
 import kotlinx.android.synthetic.main.activity_add_happy_place.*
 import java.io.File
 import java.io.FileOutputStream
@@ -301,8 +302,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 Log.e("Saved Image : ", "Path :: $saveImageToInternalStorage")
 
                 iv_place_image!!.setImageBitmap(thumbnail)
-            }
-            else if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            } else if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
 
                 val place: Place = Autocomplete.getPlaceFromIntent(data!!)
 
@@ -310,8 +310,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 mLatitude = place.latLng!!.latitude
                 mLongitude = place.latLng!!.longitude
             }
-        }
-        else if (resultCode == Activity.RESULT_CANCELED) {
+        } else if (resultCode == Activity.RESULT_CANCELED) {
             Log.e("Cancelled", "Cancelled")
         }
     }
@@ -470,6 +469,19 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             Log.e("Current Latitude", "$mLatitude")
             mLongitude = mLastLocation.longitude
             Log.e("Current Longitude", "$mLongitude")
+
+            val addressTask =
+                GetAddressFromLatLng(this@AddHappyPlaceActivity, mLatitude, mLongitude)
+            addressTask.setAddressListener(object : GetAddressFromLatLng.AddressListener {
+                override fun onAddressFound(address: String?) {
+                    et_location.setText(address)
+                }
+
+                override fun onError() {
+                    Log.e("Get Address::", "Something went wrong")
+                }
+            })
+            addressTask.getAddress()
         }
     }
 
